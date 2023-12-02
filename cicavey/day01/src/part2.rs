@@ -1,22 +1,7 @@
 use std::cmp::Reverse;
 
-pub fn run(input: &str, log: fn(String)) {
+pub fn process(input: &str) -> String {
     let mut sum: u64 = 0;
-
-    for line in input.lines() {
-        let first_idx = line.find(|c: char| c.is_ascii_digit()).unwrap();
-        let last_idx = line.rfind(|c: char| c.is_ascii_digit()).unwrap();
-
-        let first = line.chars().nth(first_idx).unwrap();
-        let last = line.chars().nth(last_idx).unwrap();
-
-        let v: u64 = format!("{}{}", first, last).parse().unwrap();
-        sum += v
-    }
-
-    log(format!("{}", sum));
-
-    let mut sum2: u64 = 0;
     let d = vec![
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "zero", "one", "two", "three", "four",
         "five", "six", "seven", "eight", "nine",
@@ -42,9 +27,8 @@ pub fn run(input: &str, log: fn(String)) {
 
         let v = values[f[0].0] * 10 + values[l[0].0];
 
-        sum2 += v;
-        // break;
+        sum += v;
     }
 
-    log(format!("{}", sum2));
+    return format!("{}", sum);
 }
