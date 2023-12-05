@@ -7,3 +7,4 @@ members = ["day*"]
 wasm-bindgen = "0.2"
 euclid = "0.22"
 regex = "1.10"
+itertools = "0.12"
