@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use rayon::prelude::*;
 use regex::Regex;
 use std::cmp::min;
 use std::collections::{HashMap, HashSet};
@@ -44,7 +45,7 @@ pub fn process(input: &str) -> String {
     // skip blank
     lines.next();
 
-    let mut mappings_by_src: HashMap<String, Mapping> = HashMap::new();
+    let mut mappings = vec![];
 
     while let Some(line) = lines.next() {
         let caps = mapre.captures(line).unwrap();
@@ -76,35 +77,23 @@ pub fn process(input: &str) -> String {
             mapping.ranges.push(er);
         }
 
-        mappings_by_src.insert(mapping.src.clone(), mapping);
+        mappings.push(mapping);
     }
 
-    let mut loc = u64::MAX;
+    let mut min_loc = u64::MAX;
 
     for (&start, &len) in seeds.iter().tuples() {
-        println!("{} {}", start, len);
-        for seed in start..(start + len) {
-            let mut src = "seed".to_string();
-            let mut cur = seed;
-
-            while src != "location" {
-                let m = mappings_by_src.get(&src).unwrap();
-                let next = m.map(cur);
-
-                // println!("{} {} maps to {} {}", src, cur, m.dst, next);
-
-                src = m.dst.clone();
-                cur = next
-            }
-
-            loc = min(loc, cur);
-
-            if seed % 1000000 == 0 {
-                let per = (seed - start) as f64 / len as f64 * 100.0;
-                println!("{} / {} - {}", seed - start, len, per);
-            }
-        }
+        let loc = (start..(start + len))
+            .into_par_iter() // parallel go brrrrrrrrr
+            .map(|seed| {
+                return mappings
+                    .iter()
+                    .fold(seed, |location, map| map.map(location));
+            })
+            .min()
+            .unwrap();
+        min_loc = min(min_loc, loc);
     }
 
-    return format!("{}", loc);
+    return format!("{}", min_loc);
 }
