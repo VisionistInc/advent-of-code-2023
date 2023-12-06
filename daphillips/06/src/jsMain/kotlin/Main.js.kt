@@ -1,0 +1,1 @@
+actual fun getLines() = getLinesFromFile(INPUT_FILE)
