@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+
 plugins {
     kotlin("multiplatform")
 }
@@ -28,12 +30,12 @@ repositories {
 }
 
 
-//rootProject.the<NodeJsRootExtension>().apply {
-//    // this version was able to work with a "hello world" wasm target
-////    nodeVersion = "21.0.0-v8-canary202309143a48826a08"
-//    nodeVersion = "22.0.0-v8-canary202311294a3904c9c5"
-//    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
-//}
+rootProject.the<NodeJsRootExtension>().apply {
+    // this version was able to work with a "hello world" wasm target
+    //    nodeVersion = "21.0.0-v8-canary202309143a48826a08"
+    nodeVersion = "22.0.0-v8-canary202311294a3904c9c5"
+    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
+}
 
 //rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
 //    rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().download = false

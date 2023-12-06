@@ -1,6 +1,5 @@
 plugins {
     id("aoc-2023-kotlin-conventions")
-//    application
 }
 
 kotlin {
@@ -36,12 +35,10 @@ tasks.register("runAll") {
     dependsOn("jvmRun")
     dependsOn("jsNodeRun")
     dependsOn("runReleaseExecutableNativeHost")
-//    dependsOn("wasmJsNodeRun")
+    // getting runtime errors with wasmjsnode
+    //    dependsOn("wasmJsNodeRun")
+    dependsOn("wasmWasiNodeRun")
 }
-
-//application {
-//    mainClass.set("MainKt")
-//}
 
 repositories {
     mavenCentral()
