@@ -1,0 +1,1 @@
+actual fun getLines(): List<String> = INPUT.lines()
