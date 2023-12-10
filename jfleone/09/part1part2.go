@@ -49,6 +49,7 @@ func recurse(in []int) [][]int {
 	return append(recurse(differences), in)
 }
 
+// Part 1
 func extrapolate(hist []int) int {
 
 	pattern := recurse(hist)
@@ -62,12 +63,25 @@ func extrapolate(hist []int) int {
 	return pattern[len(pattern)-1][len(hist)]
 }
 
+// Part 2
+func extrapolateBackwards(hist []int) int {
+	pattern := recurse(hist)
+
+	for i := 1; i < len(pattern); i++ {
+		data := pattern[i]
+		nextVal := data[0] - pattern[i-1][0]
+		pattern[i] = append([]int{nextVal}, pattern[i]...)
+	}
+	return pattern[len(pattern)-1][0]
+}
+
 func main() {
 	lines := readLines("./input.txt")
 
 	sum := 0
 	for _, line := range lines {
-		sum += extrapolate(line)
+		// sum += extrapolate(line)
+		sum += extrapolateBackwards(line)
 		fmt.Println(sum)
 	}
 }
