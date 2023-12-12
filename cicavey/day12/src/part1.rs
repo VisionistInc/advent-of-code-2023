@@ -1,6 +1,4 @@
-use itertools::Itertools;
 use rayon::prelude::*;
-use regex::Regex;
 use std::fmt;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -20,6 +18,35 @@ impl fmt::Display for State {
         };
         write!(f, "{}", c)
     }
+}
+
+fn det_seq(s: Vec<State>) -> Vec<usize> {
+    let mut out = vec![];
+    let mut cur = 0 as usize;
+    for i in 1..s.len() {
+        if s[i - 1] == State::Operational && s[i] == State::Damaged {
+            // start
+            cur = 0;
+            continue;
+        }
+        if s[i - 1] == State::Damaged && s[i] == State::Damaged {
+            cur += 1;
+            continue;
+        }
+        if s[i - 1] == State::Damaged && s[i] == State::Operational {
+            cur += 1;
+            out.push(cur);
+            cur = 0;
+        }
+    }
+
+    if cur != 0 {
+        out.push(cur + 1);
+    } else if *s.last().unwrap() == State::Damaged {
+        out.push(1);
+    }
+
+    return out;
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -74,8 +101,6 @@ pub fn process(input: &str) -> String {
         entries.push(Entry::new(mask, constraints));
     });
 
-    let re = Regex::new(r"#+").unwrap();
-
     let sum: u64 = entries
         .par_iter()
         .map(|e| {
@@ -93,15 +118,7 @@ pub fn process(input: &str) -> String {
                         }
                     }
 
-                    // At this point mask is _one_ potential solution
-                    // How do we check it?
-                    // Convert mask into constraints
-                    let mut mask_str = String::new();
-                    mask.iter()
-                        .for_each(|mv| mask_str.push_str(&format!("{}", mv)));
-
-                    // this has gotta be slow...
-                    let mc: Vec<_> = re.find_iter(&mask_str).map(|f| f.len()).collect();
+                    let mc = det_seq(mask);
 
                     if e.check == mc {
                         return 1;
